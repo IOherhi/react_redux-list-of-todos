@@ -8,11 +8,7 @@ type Props = {
   setModalClose: (pr: boolean) => void;
 };
 
-export const TodoModal: React.FC<Props> = ({
-  loader,
-  setModalClose,
-  actualUser,
-}) => {
+export const TodoModal: React.FC<Props> = ({ loader, setModalClose, actualUser }) => {
   return (
     <div className="modal is-active" data-cy="modal">
       <div className="modal-background" />
@@ -22,10 +18,7 @@ export const TodoModal: React.FC<Props> = ({
       ) : (
         <div className="modal-card">
           <header className="modal-card-head">
-            <div
-              className="modal-card-title has-text-weight-medium"
-              data-cy="modal-header"
-            >
+            <div className="modal-card-title has-text-weight-medium" data-cy="modal-header">
               {`Todo #${actualUser.id}`}
             </div>
 
@@ -44,11 +37,7 @@ export const TodoModal: React.FC<Props> = ({
             </p>
 
             <p className="block" data-cy="modal-user">
-              {/* <strong className="has-text-success">Done</strong> */}
-              <strong className="has-text-danger">Planned</strong>
-
-              {' by '}
-
+              <strong className="has-text-danger">Planned</strong> {' by '}
               <a href="mailto:Sincere@april.biz">Leanne Graham</a>
             </p>
           </div>

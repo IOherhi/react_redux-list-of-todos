@@ -1,19 +1,21 @@
 import { useState } from 'react';
 
+type StatusType = 'all' | 'active' | 'completed';
+
 type Props = {
   doSearch: (query: string) => void;
-  doSearchSelect: (value: RTCStatsType) => void;
+  doSearchSelect: (value: StatusType) => void;
 };
 
 export const TodoFilter: React.FC<Props> = ({ doSearch, doSearchSelect }) => {
   const [valueInput, setValueInput] = useState('');
 
   return (
-    <form className="field has-addons">
+    <form className="field has-addons" onSubmit={e => e.preventDefault()}>
       <p className="control">
         <span className="select">
           <select
-            onChange={e => doSearchSelect(e.target.value as RTCStatsType)}
+            onChange={e => doSearchSelect(e.target.value as StatusType)}
             data-cy="statusSelect"
           >
             <option value="all">All</option>
@@ -39,17 +41,19 @@ export const TodoFilter: React.FC<Props> = ({ doSearch, doSearchSelect }) => {
           <i className="fas fa-magnifying-glass" />
         </span>
 
-        <span className="icon is-right" style={{ pointerEvents: 'all' }}>
-          <button
-            data-cy="clearSearchButton"
-            type="button"
-            onClick={() => {
-              doSearch('');
-              setValueInput('');
-            }}
-            className="delete"
-          />
-        </span>
+        {valueInput && (
+          <span className="icon is-right" style={{ pointerEvents: 'all' }}>
+            <button
+              data-cy="clearSearchButton"
+              type="button"
+              onClick={() => {
+                doSearch('');
+                setValueInput('');
+              }}
+              className="delete"
+            />
+          </span>
+        )}
       </p>
     </form>
   );

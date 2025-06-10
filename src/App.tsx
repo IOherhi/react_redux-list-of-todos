@@ -16,26 +16,35 @@ export const App = () => {
   const [modalClose, setModalClose] = useState(false);
   const [loader, setLoader] = useState(false);
 
-  const [initialTodos, setinitialTodos] = useState<Todo[]>([]);
+  const [initialTodos, setInitialTodos] = useState<Todo[]>([]);
   const actualUser = useSelector((state: RootState) => state.currentUser);
   const statusTodo = useSelector((state: RootState) => state.filter.status);
 
   const [searchSelect, setSearchSelect] = useState<Todo[]>([]);
 
   const doSearch = (content: string) => {
+    const searchTerm = content.toLowerCase();
+
     if (statusTodo === 'all') {
       if (content === '') {
         dispatch(listTodos(initialTodos));
-
         return;
       }
 
       dispatch(
-        listTodos(initialTodos.filter(item => item.title.includes(content))),
+        listTodos(
+          initialTodos.filter(item =>
+            item.title.toLowerCase().includes(searchTerm),
+          ),
+        ),
       );
     } else {
       dispatch(
-        listTodos(searchSelect.filter(item => item.title.includes(content))),
+        listTodos(
+          searchSelect.filter(item =>
+            item.title.toLowerCase().includes(searchTerm),
+          ),
+        ),
       );
     }
   };
@@ -44,19 +53,18 @@ export const App = () => {
     switch (content) {
       case 'all':
         dispatch(listTodos(initialTodos));
+        dispatch(setStatus('all'));
         break;
 
-      case 'statusTodo':
-        const doFilterActiv = initialTodos.filter(item => !item.completed);
-
+      case 'active':
+        const doFilterActive = initialTodos.filter(item => !item.completed);
         dispatch(setStatus('active'));
-        dispatch(listTodos(doFilterActiv));
-        setSearchSelect(doFilterActiv);
+        dispatch(listTodos(doFilterActive));
+        setSearchSelect(doFilterActive);
         break;
 
       case 'completed':
         const doFilterCompleted = initialTodos.filter(item => item.completed);
-
         dispatch(setStatus('completed'));
         dispatch(listTodos(doFilterCompleted));
         setSearchSelect(doFilterCompleted);
@@ -81,7 +89,7 @@ export const App = () => {
     getTodos()
       .then(res => {
         dispatch(listTodos(res));
-        setinitialTodos(res);
+        setInitialTodos(res);
       })
       .finally(() => setLoader(false));
   }, [dispatch]);
@@ -97,19 +105,13 @@ export const App = () => {
               <TodoFilter doSearch={doSearch} doSearchSelect={doSearchSelect} />
             </div>
 
-            <div className="block">
-              {loader ? <Loader /> : <TodoList selectById={selectById} />}
-            </div>
+            <div className="block">{loader ? <Loader /> : <TodoList selectById={selectById} />}</div>
           </div>
         </div>
       </div>
 
       {modalClose && actualUser && (
-        <TodoModal
-          loader={loader}
-          setModalClose={setModalClose}
-          actualUser={actualUser}
-        />
+        <TodoModal loader={loader} setModalClose={setModalClose} actualUser={actualUser} />
       )}
     </>
   );
